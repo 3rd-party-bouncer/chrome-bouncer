@@ -210,37 +210,40 @@ function thirdPartyUpdate() {
       tab : tabId
     },
     function( response ) {
-      console.log( response );
-      var thirdPartyHosts = Object.keys( response.thirdParties );
+      let thirdPartyHosts = Object.keys( response.thirdParties );
 
-      var tableHtml = thirdPartyHosts.reduce( function( html, key ) {
+      let listHtml = thirdPartyHosts.reduce( ( html, host )  => {
         html += `
-          <tr>
-            <td>${ key }</td>
-            <td>${ response.thirdParties[ key ].script ? response.thirdParties[ key ].script.length : '0' }</td>
-            <td>${ response.thirdParties[ key ].stylesheet ? response.thirdParties[ key ].stylesheet.length : '0' }</td>
-            <td>${ response.thirdParties[ key ].font ? response.thirdParties[ key ].font.length : '0' }</td>
-            <td>${ response.thirdParties[ key ].image ? response.thirdParties[ key ].image.length : '0' }</td>
-            <td>${ response.thirdParties[ key ].sub_frame ? response.thirdParties[ key ].sub_frame.length : '0' }</td>
-            <td>${ response.thirdParties[ key ].other ? response.thirdParties[ key ].other.length : '0' }</td>
-          </tr>
-        `;
+          <li>
+            <div class="collapsible-header">
+              ${ host } <span class="badge">${ response.thirdParties[ host ].total } request(s)</span>
+            </div>
+            <div class="collapsible-body">
+              ${
+                Object.keys( response.thirdParties[ host ] ).reduce( ( listHtml, key ) => {
+                  if ( key !== 'total' && response.thirdParties[ host ][ key ].length ) {
+                    listHtml += `
+                    <div style="padding : .5em 1em;">
+                      <strong>${ key }</strong>
+                      <ul>
+                        ${ response.thirdParties[ host ][ key ].map(
+                          request => `<li><a href="${ request.url }" class="overflow-ellipsis" target="_blank">${ request.url }</a></li>`
+                        ).join( '' ) }
+                      </ul>
+                    </div>
+                    `;
+                  }
 
+                  return listHtml;
+                }, '' )
+              }
+            </div>
+        `;
 
         return html;
       }, '' );
 
-      document.getElementById( 'tableBody' ).innerHTML = tableHtml;
-
-      console.log( thirdPartyHosts );
-
-      var actionHtml = `<a target="_blank"
-        href="http://www.webpagetest.org/?video=1&fvonly=1&runs=3&url=${ encodeURIComponent( response.url ) }&block=${ encodeURIComponent( thirdPartyHosts.join( ' ' ) ) }">
-        Generate 3rd Party Block Comparison Video
-      </a>'`
-
-      document.getElementById( 'actions' ).innerHTML = actionHtml;
-        // href="http://www.webpagetest.org/?video=1&fvonly=1&runs=3&url=${ encodeURIComponent( mainUrl ) }&spof=${ encodeURIComponent(spofHosts)">Generate 3rd Party Block Comparison Video</a>'`
+      document.getElementById( 'partyList' ).innerHTML = listHtml;
     }
   );
 }

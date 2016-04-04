@@ -2,37 +2,31 @@
 <html>
   <head>
     <title>Chrome Bouncer</title>
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.red-indigo.min.css" />
+    <link rel="stylesheet" href="./materialize.min.css" />
     <style>
       body {
+        font-size : 100%;
+        width : 600px;
         padding : 1em;
+      }
+
+      .overflow-ellipsis {
+        display : block;
+
+        white-space   : nowrap;
+        overflow      : hidden;
+        text-overflow : ellipsis;
       }
     </style>
   </head>
   <body>
     <div>
-      <h1 class="mdl-typography--display-1">Chrome Bouncer</h1>
-      <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
-        <thead>
-          <tr>
-            <th class="mdl-data-table__cell--non-numeric">Host</th>
-            <th>Scripts</th>
-            <th>Stylesheets</th>
-            <th>Fonts</th>
-            <th>Images</th>
-            <th>Iframe</th>
-            <th>Others</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-      </table>
-      <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" data-analyze>
-        Check WPT
-      </button>
-
-      <div id="actions"></div>
+      <h5 class="mdl-typography--display-1">Chrome Bouncer</h1>
+      <ul class="collapsible" data-collapsible="accordion" id="partyList"></ul>
     </div>
     <script src="popup.js"></script>
+    <script type="text/javascript" src="./jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="./materialize.min.js"></script>
+    </body>
   </body>
 </html>

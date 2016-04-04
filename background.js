@@ -105,17 +105,22 @@ chrome.webRequest.onCompleted.addListener(
         var host = helperAnchor.host;
 
         if ( host !== mainHosts[ info.tabId ] ) {
-          thirdParties[ info.tabId ][ host ] = thirdParties[ info.tabId ][ host ] || {};
+          thirdParties[ info.tabId ][ host ] = thirdParties[ info.tabId ][ host ] || { total : 0 };
           thirdParties[ info.tabId ][ host ][ info.type ] = thirdParties[ info.tabId ][ host ][ info.type ] || [];
 
-          thirdParties[ info.tabId ][ host ][ info.type ].push( { url : info.url } );
+          if (
+            ! thirdParties[ info.tabId ][ host ][ info.type ].filter(
+              request => request.url === info.url
+            ).length
+          ) {
+            thirdParties[ info.tabId ][ host ][ info.type ].push( { url : info.url } );
+            thirdParties[ info.tabId ][ host ].total++;
 
-          console.log( info );
-
-          chrome.browserAction.setBadgeText( {
-            tabId : info.tabId,
-            text  : '' + Object.keys( thirdParties[ info.tabId ] ).length
-          } );
+            chrome.browserAction.setBadgeText( {
+              tabId : info.tabId,
+              text  : '' + Object.keys( thirdParties[ info.tabId ] ).length
+            } );
+          }
         }
       }
     }
