@@ -210,40 +210,65 @@ function thirdPartyUpdate() {
       tab : tabId
     },
     function( response ) {
-      let thirdPartyHosts = Object.keys( response.thirdParties );
+      let hostsEl        = document.getElementById( 'partyList' );
+      let hostsCardEl    = document.getElementById( 'hostCard' );
+      let hostsDetailsEl = document.getElementById( 'hostDetails' );
+      let backToListBtn  = document.getElementById( 'backToListBtn' );
+
+      let thirdPartyHosts  = Object.keys( response.thirdParties );
 
       let listHtml = thirdPartyHosts.reduce( ( html, host )  => {
-        html += `
-          <li>
-            <div class="collapsible-header">
-              ${ host } <span class="badge">${ response.thirdParties[ host ].total } request(s)</span>
-            </div>
-            <div class="collapsible-body">
-              ${
-                Object.keys( response.thirdParties[ host ] ).reduce( ( listHtml, key ) => {
-                  if ( key !== 'total' && response.thirdParties[ host ][ key ].length ) {
-                    listHtml += `
-                    <div style="padding : .5em 1em;">
-                      <strong>${ key }</strong>
-                      <ul>
-                        ${ response.thirdParties[ host ][ key ].map(
-                          request => `<li><a href="${ request.url }" class="overflow-ellipsis" target="_blank">${ request.url }</a></li>`
-                        ).join( '' ) }
-                      </ul>
-                    </div>
-                    `;
-                  }
+        var requestBadge = response.thirdParties[ host ].total > 1 ?
+                           'requests' : 'request';
 
-                  return listHtml;
-                }, '' )
-              }
-            </div>
+        html += `
+          <a href="#!" class="collection-item" data-host="${ host }">${ host } <span class="badge">${ response.thirdParties[ host ].total } ${ requestBadge }</span></a>
         `;
 
         return html;
       }, '' );
 
-      document.getElementById( 'partyList' ).innerHTML = listHtml;
+      hostsEl.innerHTML = listHtml;
+
+      backToListBtn.addEventListener( 'click', function() {
+        hostsCardEl.classList.toggle( 'is-detailCardOpen' );
+        hostsEl.classList.toggle( 'is-hostListClose' );
+      } );
+
+      hostsEl.addEventListener(
+        'click',
+        function( e ) {
+          if ( e.target && e.target.nodeName === 'A' ) {
+            var hostDetails = response.thirdParties[ e.target.dataset.host ];
+
+            var hostDetailsHtml = Object.keys( hostDetails ).reduce( ( listHtml, key ) => {
+              if ( key !== 'total' && hostDetails[ key ].length ) {
+                listHtml += `
+                <div style="padding : 1em 0;">
+                  <strong>${ key.toUpperCase() }</strong>
+                  <ul>
+                    ${ hostDetails[ key ].map(
+                      request => `<li><a href="${ request.url }" class="overflow-ellipsis" target="_blank">${ request.url }</a></li>`
+                    ).join( '' ) }
+                  </ul>
+                </div>
+                `;
+              }
+
+              return listHtml;
+            }, '' );
+
+            hostsDetailsEl.innerHTML = hostDetailsHtml;
+
+            hostsEl.classList.toggle( 'is-hostListClose' );
+            hostsCardEl.classList.toggle( 'is-detailCardOpen' );
+          }
+        }
+      );
     }
   );
+}
+
+function getHostDetails() {
+
 }

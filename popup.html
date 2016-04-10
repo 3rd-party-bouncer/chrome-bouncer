@@ -10,6 +10,10 @@
         padding : 1em;
       }
 
+      .mainContainer {
+        position : relative;
+      }
+
       .overflow-ellipsis {
         display : block;
 
@@ -17,12 +21,41 @@
         overflow      : hidden;
         text-overflow : ellipsis;
       }
+
+      .collection {
+        transition : transform .4s ease-in-out;
+      }
+
+      .hostDetailsCard {
+        visibility : hidden;
+        height     : 0;
+        overflow   : hidden;
+        position   : absolute;
+        top        : 2em;
+        width      : 100%;
+        transform  : translateX( 110% );
+        transition : all .4s ease-in-out;
+      }
+
+      .is-detailCardOpen {
+        visibility : visible;
+        height     : auto;
+        transform  : translateX( 0% );
+      }
+
+      .is-hostListClose {
+        transform : translateX( -110% );
+      }
     </style>
   </head>
   <body>
-    <div>
+    <div class="mainContainer">
       <h5 class="mdl-typography--display-1">Chrome Bouncer</h1>
-      <ul class="collapsible" data-collapsible="accordion" id="partyList"></ul>
+      <div class="collection" id="partyList"></div>
+      <div class="hostDetailsCard card-panel teal lighten-3" id="hostCard">
+        <button id="backToListBtn" class="btn waves-effect waves-light" type="button" name="Go Back">Back</button>
+        <div id="hostDetails"></div>
+      </div>
     </div>
     <script src="popup.js"></script>
     <script type="text/javascript" src="./jquery-2.1.1.min.js"></script>
